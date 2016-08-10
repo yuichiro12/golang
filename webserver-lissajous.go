@@ -10,7 +10,6 @@ import (
 	"math"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 )
@@ -27,43 +26,51 @@ const (
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		u, err := url.Parse(r.URL.String())
-		if err != nil {
-			fmt.Sprint(err)
-			return
+		cycles, _ := strconv.Atoi(r.FormValue("cycles"))
+		res, _ := strconv.Atoi(r.FormValue("res"))
+		size, _ := strconv.Atoi(r.FormValue("size"))
+		nframes, _ := strconv.Atoi(r.FormValue("nframes"))
+		delay, _ := strconv.Atoi(r.FormValue("delay"))
+		fmt.Println(cycles)
+		fmt.Println(res)
+		fmt.Println(size)
+		fmt.Println(nframes)
+		fmt.Println(delay)
+		arr := map[string]int{
+			"cycles":  cycles,
+			"res":     res,
+			"size":    size,
+			"nframes": nframes,
+			"delay":   delay,
 		}
-		lissajous(w, u.Query())
+		lissajous(w, arr)
 	}
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe("localhost:8003", nil))
 }
 
-func lissajous(out io.Writer, u url.Values) {
-	cycles = 5
-	res = 0.001
-	size = 200
-	nframes = 64
-	delay = 8
-
-	if cycles, ok := strconv.Atoi(u.Get("cycles")); ok != nil {
-	} else {
-		cycles := 5
+func lissajous(out io.Writer, arr map[string]int) {
+	var (
+		cycles  = 5
+		res     = 0.001
+		size    = 200
+		nframes = 64
+		delay   = 8
+	)
+	if arr["cycles"] > 0 {
+		cycles = arr["cycles"]
 	}
-	if res, ok := strconv.Atoi(u.Get("res")); ok != nil {
-	} else {
-		res := 0.001
+	if arr["res"] > 0 {
+		res = float64(arr["res"])
 	}
-	if size, ok := strconv.Atoi(u.Get("size")); ok != nil {
-	} else {
-		size := 5
+	if arr["size"] > 0 {
+		size = arr["size"]
 	}
-	if nframes, ok := strconv.Atoi(u.Get("nframes")); ok != nil {
-	} else {
-		nframes := 200
+	if arr["nframes"] > 0 {
+		nframes = arr["nframes"]
 	}
-	if delay, ok := strconv.Atoi(u.Get("delay")); ok != nil {
-	} else {
-		delay := 8
+	if arr["delay"] > 0 {
+		delay = arr["delay"]
 	}
 
 	freq := rand.Float64() * 3.0
@@ -81,10 +88,10 @@ func lissajous(out io.Writer, u url.Values) {
 		}
 		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
 		img := image.NewPaletted(rect, palette)
-		for t := 0.0; t < cycles*2*math.Pi; t += res {
+		for t := 0.0; t < float64(cycles)*2*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), colorIndex)
+			img.SetColorIndex(size+int(x*float64(size)+0.5), size+int(y*float64(size)+0.5), colorIndex)
 		}
 		phase += 0.1
 		anim.Delay = append(anim.Delay, delay)
