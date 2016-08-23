@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/gif"
@@ -31,11 +30,6 @@ func main() {
 		size, _ := strconv.Atoi(r.FormValue("size"))
 		nframes, _ := strconv.Atoi(r.FormValue("nframes"))
 		delay, _ := strconv.Atoi(r.FormValue("delay"))
-		fmt.Println(cycles)
-		fmt.Println(res)
-		fmt.Println(size)
-		fmt.Println(nframes)
-		fmt.Println(delay)
 		arr := map[string]int{
 			"cycles":  cycles,
 			"res":     res,
