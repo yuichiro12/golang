@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -9,14 +8,14 @@ import (
 )
 
 func main() {
-	//http.HandleFunc("/", handler)
-	//log.Fatal(http.ListenAndServe("localhost:1051", nil))
 	sockHandler := sockjs.NewHandler("/echo", sockjs.DefaultOptions, echoHandler)
+	sendHandler := sockjs.NewHandler("/send", sockjs.DefaultOptions, sendHandler)
 	log.Fatal(http.ListenAndServe("localhost:8081", sockHandler))
+	log.Fatal(http.ListenAndServe("localhost:8082", sendHandler))
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<div>chat</div><form><button type='type'>socket</button></form>")
+func sendHandler(session sockjs.Session) {
+	session.Send("hi")
 }
 
 func echoHandler(session sockjs.Session) {
