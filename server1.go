@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"io/ioutil"
 )
 
 func main() {
@@ -12,5 +13,6 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+	content, _ := ioutil.ReadFile("index2.html")
+	fmt.Fprintf(w, string(content))
 }

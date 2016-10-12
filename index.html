@@ -39,7 +39,6 @@
         }
 
         function onMessage(evt) {
-            console.log(evt);
             writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data +'</span>');
         }
 
@@ -63,7 +62,7 @@
 </head>
 <body>
 <h2>WebSocket Test</h2>
-<input type="text" id="msg"><input type="submit" onclick="doSend('msg')">
+<form action="#" method="GET" onsubmit="return false;"><input type="text" id="msg"><input type="submit" onclick="doSend(getElementById('msg').value);getElementById('msg').value=''"></form>
 <div id="output"></div>
 </body>
 </html>

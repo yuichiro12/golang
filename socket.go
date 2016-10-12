@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"gopkg.in/igm/sockjs-go.v2/sockjs"
-	"fmt"
 )
 
 //const BUFSIZE = 1024
@@ -16,12 +15,13 @@ func main() {
 }
 
 func echoHandler(session sockjs.Session) {
-	fmt.Print("hello, world")
 	for {
 		if msg, err := session.Recv(); err == nil {
-			session.Send(msg)
+			session.Send(session.ID() + msg)
 			continue
 		}
 		break
 	}
 }
+
+func
